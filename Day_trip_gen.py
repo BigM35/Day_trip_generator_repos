@@ -154,8 +154,10 @@ def determine_user_input(pass_input):
             return pass_input
     if pass_input.lower() == 'yes' or 'no':
         return pass_input
+
 #Greeting and introduction
 def introduction():
+    print("\n")
     user_answer_from_intro = input(f"{determine_part_of_day(hour, user_name)} I am here to help you determine the location of your next trip, recommend some great restaurants, some fun activities, and the transportation choices. Are you ready to get started? [Yes/No]: ").lower()
     checked_answer = determine_user_input(user_answer_from_intro)
     if "no" == checked_answer:
@@ -166,7 +168,6 @@ def introduction():
         print("\n")
         print(f"Excellent! So {user_name}, lets start off with the destination...")
         
-
 #Given a list of items, return a random element
 def generate_new_choice(current_list):
     user_choice = random.choice(current_list)
@@ -180,7 +181,6 @@ def generate_new_choice(current_list):
         checked_user_answer = determine_user_input(user_answer)
     if checked_user_answer.lower() == "yes":
         return user_choice
-
     
 #Base on the element in the list, determine the city name
 def get_city_name(info):
@@ -248,6 +248,12 @@ def generate_transportation(city_name,transport_list):
     print(f"Sounds fun! Finally, lets decide on how we will be getting to {city_name}!")
     return generate_new_choice(transport_list)
 
+def verfied_restaurant(first_des, final_des):
+    if first_des != final_des:
+        return get_restaurant(final_des)
+    else:
+        return first_des
+
 #calling function
 print(introduction())
 destination_details = generate_new_choice(cities)
@@ -256,51 +262,33 @@ chosen_restaurant = get_restaurant(destination_name)
 chosen_thing_to_do = generate_activity(destination_name, things_to_do)
 chosen_transport = generate_transportation(destination_name, mode_of_transportation)
 
-#Confirmation
  
 #Final confirmation
 print("\n")
 print("You are almost done, let just confirm a few things. ")
-def user_destination_confirmation(cities_list):
-    user_confirmation = input(f"Are you satified with your destination of {destination_name}? [Yes/No]: ")
-    if user_confirmation.lower() == ("no"):
-        return generate_new_choice(cities_list)
-    else:
-        return city_details
 
-def user_restaurant_confirmation(cityinfo):
+def user_confirmation(whats_chosen_so_far,listt):
     print("\n")
-    user_restaurant_confirmation = input(f"Are you satified with your destination of {chosen_restaurant}? [Yes/No]: ")
-    if user_restaurant_confirmation.lower() == ("no"):
-        return get_restaurant(cityinfo)
+    user_confirmation = input(f"Are you satified with {whats_chosen_so_far}? [Yes/No]: ")
+    checked_confirmation_input = determine_user_input(user_confirmation)
+    if checked_confirmation_input == ("no"):
+        re_chosen_option = generate_new_choice(listt)
+        return re_chosen_option
     else:
-        return chosen_restaurant
-
-def user_activity_confirmation(name, act_list):
-    print("\n")
-    user_thing_to_do_confirmation = input(f"Are you satified with {chosen_thing_to_do} on your trip to {name}? [Yes/No]: ")
-    if user_thing_to_do_confirmation.lower() == ("no"):
-        return generate_new_choice(act_list)
-    else:
-        return chosen_thing_to_do
-
-def user_transport_confirmation(name, transport_list):
-    print("\n")
-    user_confirmation = input(f"Are you satified with {chosen_transport} to {name}? [Yes/No]: ")
-    if user_confirmation.lower() == ("no"):
-       return generate_new_choice(transport_list)
-    else:
-        return chosen_transport
+        return whats_chosen_so_far
 
 
-city_details = user_destination_confirmation(cities)
-new_chosen_city = get_city_name(city_details)
-new_chosen_restaurant = user_restaurant_confirmation(city_details)
-new_chosen_thing_to_do = user_activity_confirmation(chosen_city, things_to_do)
-new_chosen_transport = user_transport_confirmation(chosen_city, mode_of_transportation)
+new_destination = user_confirmation(destination_name, cities)
+new_destination_name = get_city_name(new_destination)
+new_restaurant = verfied_restaurant(destination_name, new_destination_name)
+new_thing_to_do = user_confirmation(chosen_thing_to_do, things_to_do)
+new_transport = user_confirmation(chosen_transport, mode_of_transportation)
+verfy_new_restaurant = user_confirmation(new_restaurant, new_destination)
 
 
 print("\n") 
-final_confirmation = input(f"Congratulations {user_name}! you have completed all choices for the Day Trip Generator. you will be taking a trip to {new_chosen_city} which you will be {new_chosen_thing_to_do} and for lunch, you will be eating at {new_chosen_restaurant}. You will be driving to {new_chosen_transport}. does this sound good? [Yes/No]")
-if final_confirmation.lower() == ("yes"):
-    print (f"Sounds fun {user_name}! Hope you have a great time in {chosen_city}, I will be here when you are in need of my assistance again.")
+final_confirmation = input(f"Congratulations {user_name}! You have completed all choices for the Day Trip Generator. You will be {new_transport} to you newly generated day trip to {new_destination_name}, which you will be {new_thing_to_do}. After a long day of {new_thing_to_do}, you will be dining at the fabulous restaurant called {verfy_new_restaurant}. That should conclude your trip to {new_destination_name}, at which point, you will be {new_transport} back home. Does this sound acceptable for you? [Yes/No]: ")
+
+if determine_user_input(final_confirmation) == ("yes"):
+    print("\n")
+    print (f"Sounds fun {user_name}! Hope you have a great time in {new_destination_name}, I will be here when you are in need of my assistance again.")
