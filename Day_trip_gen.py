@@ -145,74 +145,93 @@ def determine_part_of_day(time,name):
     else:
        return f"Its late {name}, but reguardless, "
 
+#Determine if input is yes/no
+def determine_user_input(pass_input):
+    while "no" != pass_input.lower() != 'yes':
+        print("\n")
+        pass_input = input("Invalid Entry! Please answer with [Yes/No]. So does the last entry sound good? [Yes/No]: ").lower()
+        if pass_input == 'yes' or 'no':
+            return pass_input
+    if pass_input.lower() == 'yes' or 'no':
+        return pass_input
 #Greeting and introduction
-user_answer_from_intro = input(f"{determine_part_of_day(hour, user_name)} I am here to help you determine the location of your next trip, recommend some great restaurants, some fun activities, and the transportation choices. Are you ready to get started? [Yes/No]: ")
-
-if "no" in  user_answer_from_intro.lower():
+def introduction():
+    user_answer_from_intro = input(f"{determine_part_of_day(hour, user_name)} I am here to help you determine the location of your next trip, recommend some great restaurants, some fun activities, and the transportation choices. Are you ready to get started? [Yes/No]: ").lower()
+    checked_answer = determine_user_input(user_answer_from_intro)
+    if "no" == checked_answer:
+        print("\n")
         print(f"Okay {user_name}, I will be here whenever you need help with your trip, goodbye for now.") 
         exit()
+    else: 
+        print("\n")
+        print(f"Excellent! So {user_name}, lets start off with the destination...")
+        
+
 #Given a list of items, return a random element
 def generate_new_choice(current_list):
     user_choice = random.choice(current_list)
     print("\n")
-    user_answer = input(f"How about {user_choice}. Sounds good? [Yes/No]: ")
-    if user_answer == ("no"):
+    user_answer = input(f"How about {user_choice}. Sounds good? [Yes/No]: ").lower()
+    checked_user_answer = determine_user_input(user_answer)
+    while checked_user_answer == "no":
         print("\n")
         user_choice = random.choice(current_list)
-        user_answer = input(f"How about {user_choice}. Sounds good? [Yes/No]: ")
-    elif user_answer == ("yes"):
+        user_answer = input(f"How about {user_choice}. Sounds good? [Yes/No]: ").lower()
+        checked_user_answer = determine_user_input(user_answer)
+    if checked_user_answer.lower() == "yes":
         return user_choice
 
-#Base on the element in the list, determain the city name
+    
+#Base on the element in the list, determine the city name
 def get_city_name(info):
-    if "San Francisco?"  in info:
+    if "San Francisco?" in info:
         return "San Francisco"
-    elif "Boston?"  in info:
+    elif ("Boston?") in info:
        return "Boston"
-    elif "Charleston?"  in info:
+    elif ("Charleston?") in info:
         return "Charleston"
-    elif "Seattle?"  in info:
+    elif "Seattle?" in info:
         return "Seattle"
-    elif "Milwaukee?"  in info:
+    elif ("Milwaukee?") in info:
         return "Milwaukee"
-    elif "New Orleans?"  in info:
+    elif ("New Orleans?") in info:
         return "New Orleans"
-    elif "Chicago?"  in info:
+    elif ("Chicago?") in info:
         return "Chicago"
-    elif "Salt Lake City?"  in info:
+    elif ("Salt Lake City?") in info:
        return "Salt Lake City"
 
 #Determine what the restaurants
 def get_restaurant(city):
-    if "San Francisco?"  in city:
+    if "San Francisco" == city:
         print("\n")
         print("Great, now on to restaurants in San Francisco!")
         return generate_new_choice(salt_lake_restaurants)
-    elif "Boston?"  in city:
+    elif "Boston" == city:
         print("\n")
         print("Great, now on to restaurants in Boston!")
         return generate_new_choice(boston_restaurants)
-    elif "Charleston?"  in city:
+    elif "Charleston" == city:
         print("\n")
         print("Great, now on to restaurants in Charleston!")
         return generate_new_choice(charleston_restaurants)
-    elif "Seattle??"  in city:
+    elif "Seattle" == city:
         print("\n")
         print("Great, now on to restaurants in Seattle!")
         return generate_new_choice(seattle_restaurants)
-    elif "Milwaukee?"  in city:
+    elif "Milwaukee" == city:
         print("\n")
         print("Great, now on to restaurants in Milwaukee!")
         return generate_new_choice(milwaukee_restaurants)
-    elif "New Orleans?"  in city:
+    elif "New Orleans" == city:
         print("\n")
         print("Great, now on to restaurants in New Orleans!")
         return generate_new_choice(new_orleans_restaurants)
-    elif "Chicago?"  in city:
+    elif "Chicago" == city:
         print("\n")
         print("Great, now on to restaurants in Chicago!")
         return generate_new_choice(chicago_restaurants)
-    elif "Salt Lake City?"  in city:
+    elif "Salt Lake City?" == city:
         print("\n")
         print("Great, now on to restaurants in Salt Lake City!")
         return generate_new_choice(salt_lake_restaurants)
@@ -230,12 +249,12 @@ def generate_transportation(city_name,transport_list):
     return generate_new_choice(transport_list)
 
 #calling function
-
-city_details = generate_new_choice(cities)
-chosen_city = get_city_name(city_details)
-chosen_restaurant = get_restaurant(city_details)
-chosen_thing_to_do = generate_activity(chosen_city, things_to_do)
-chosen_transport = generate_transportation(chosen_city, mode_of_transportation)
+print(introduction())
+destination_details = generate_new_choice(cities)
+destination_name = get_city_name(destination_details)
+chosen_restaurant = get_restaurant(destination_name)
+chosen_thing_to_do = generate_activity(destination_name, things_to_do)
+chosen_transport = generate_transportation(destination_name, mode_of_transportation)
 
 #Confirmation
  
@@ -243,7 +262,7 @@ chosen_transport = generate_transportation(chosen_city, mode_of_transportation)
 print("\n")
 print("You are almost done, let just confirm a few things. ")
 def user_destination_confirmation(cities_list):
-    user_confirmation = input(f"Are you satified with your destination of {chosen_city}? [Yes/No]: ")
+    user_confirmation = input(f"Are you satified with your destination of {destination_name}? [Yes/No]: ")
     if user_confirmation.lower() == ("no"):
         return generate_new_choice(cities_list)
     else:
@@ -275,13 +294,13 @@ def user_transport_confirmation(name, transport_list):
 
 
 city_details = user_destination_confirmation(cities)
-chosen_city = get_city_name(city_details)
-chosen_restaurant = user_restaurant_confirmation(city_details)
-chosen_thing_to_do = user_activity_confirmation(chosen_city, things_to_do)
-chosen_transport = user_transport_confirmation(chosen_city, mode_of_transportation)
+new_chosen_city = get_city_name(city_details)
+new_chosen_restaurant = user_restaurant_confirmation(city_details)
+new_chosen_thing_to_do = user_activity_confirmation(chosen_city, things_to_do)
+new_chosen_transport = user_transport_confirmation(chosen_city, mode_of_transportation)
 
 
 print("\n") 
-final_confirmation = input(f"Congratulations {user_name}! you have completed all choices for the Day Trip Generator. you will be taking a trip to {chosen_city} which you will be {chosen_thing_to_do} and for lunch, you will be eating at {chosen_restaurant}. You will be driving to {chosen_transport}. does this sound good? [Yes/No]")
+final_confirmation = input(f"Congratulations {user_name}! you have completed all choices for the Day Trip Generator. you will be taking a trip to {new_chosen_city} which you will be {new_chosen_thing_to_do} and for lunch, you will be eating at {new_chosen_restaurant}. You will be driving to {new_chosen_transport}. does this sound good? [Yes/No]")
 if final_confirmation.lower() == ("yes"):
     print (f"Sounds fun {user_name}! Hope you have a great time in {chosen_city}, I will be here when you are in need of my assistance again.")
